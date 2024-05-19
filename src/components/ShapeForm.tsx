@@ -6,6 +6,7 @@ import resultsStore from "@/store/global";
 
 const ShapeForm: React.FC = () => {
   const addResults = resultsStore((state) => state.addResult);
+  const deleteAll = resultsStore((state) => state.deleteAll);
 
   const [formState, setFormState] = useState<FormState>({
     shape: "cuadrado",
@@ -75,14 +76,23 @@ const ShapeForm: React.FC = () => {
     addResults({ formState, count: calculatedCount });
   };
 
+  const resetForm = () => {
+    deleteAll();
+  };
+
   return (
     <section className="flex flex-col gap-6">
       <form className="text-black flex flex-col gap-3" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 text-4xl rounded-xl text-center">
           <label className="text-white" htmlFor="shape">
             Forma de Techo:
           </label>
-          <select name="shape" value={formState.shape} onChange={handleChange}>
+          <select
+            name="shape"
+            className=" text-4xl rounded-xl text-center"
+            value={formState.shape}
+            onChange={handleChange}
+          >
             <option value="cuadrado">Cuadrado</option>
             <option value="triángulo">Triángulo</option>
           </select>
@@ -92,6 +102,7 @@ const ShapeForm: React.FC = () => {
             Altura de Techo:
           </label>
           <input
+            className=" text-4xl rounded-xl text-center"
             max="1000"
             min="1"
             type="number"
@@ -105,6 +116,7 @@ const ShapeForm: React.FC = () => {
             Longitud de Techo:
           </label>
           <input
+            className=" text-4xl rounded-xl text-center"
             max="1000"
             min="1"
             type="number"
@@ -118,6 +130,7 @@ const ShapeForm: React.FC = () => {
             Paneles Altura:
           </label>
           <input
+            className=" text-4xl rounded-xl text-center"
             max="1000"
             min="1"
             type="number"
@@ -131,6 +144,7 @@ const ShapeForm: React.FC = () => {
             Paneles Longitud:
           </label>
           <input
+            className=" text-4xl rounded-xl text-center"
             max="1000"
             min="1"
             type="number"
@@ -144,6 +158,13 @@ const ShapeForm: React.FC = () => {
           className="bg-green-700 text-white px-4 py-2 rounded"
         >
           Calcular y Grabar
+        </button>
+        <button
+          type="button"
+          onClick={resetForm}
+          className="bg-red-700 text-white px-4 py-2 rounded"
+        >
+          Borrar Todo
         </button>
         {result && <p className="text-white">{result}</p>}
         {count !== null && (
