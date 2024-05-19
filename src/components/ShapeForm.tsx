@@ -43,17 +43,29 @@ const ShapeForm: React.FC = () => {
     if (shape === "cuadrado") {
       areaBigShape = height * length;
     } else {
+      // Validar si el triángulo es isósceles
+      const isIsosceles = height > length;
+      if (!isIsosceles) {
+        setResult(
+          "El triángulo no es isósceles. No se puede realizar la operación."
+        );
+        setCount(null);
+        return;
+      }
       areaBigShape = (height * length) / 2;
     }
 
     areaSmallShape = quadrilateralHeight * quadrilateralLength;
     fit = areaBigShape >= areaSmallShape;
     setResult(
-      fit ? "Sí, cabe(n) cuadrilátero(s)." : "No, no cabe ningún cuadrilátero."
+      fit ? "Sí, cabe el cuadrilátero." : "No, no cabe el cuadrilátero."
     );
 
     if (fit) {
-      const count = Math.floor(areaBigShape / areaSmallShape);
+      let count = Math.floor(areaBigShape / areaSmallShape);
+      if (isNaN(count) || !isFinite(count)) {
+        count = 0;
+      }
       setCount(count);
     } else {
       setCount(0);
@@ -97,7 +109,7 @@ const ShapeForm: React.FC = () => {
       </div>
       <div className="flex flex-col gap-1">
         <label className="text-white" htmlFor="quadrilateralHeight">
-          Otra Altura:
+          Cuadrilátero Pequeño Altura:
         </label>
         <input
           min="0"
@@ -109,7 +121,7 @@ const ShapeForm: React.FC = () => {
       </div>
       <div className="flex flex-col gap-1">
         <label className="text-white" htmlFor="quadrilateralLength">
-          Otra Longitud:
+          Cuadrilátero Pequeño Longitud:
         </label>
         <input
           min="0"
