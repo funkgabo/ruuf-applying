@@ -4,6 +4,7 @@ export interface FormState {
   length: number;
   quadrilateralHeight: number;
   quadrilateralLength: number;
+  count: number;
 }
 
 export interface SavedResultsProps {

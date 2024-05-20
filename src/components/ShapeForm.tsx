@@ -14,6 +14,7 @@ const ShapeForm: React.FC = () => {
     length: 1,
     quadrilateralHeight: 1,
     quadrilateralLength: 1,
+    count: 0,
   });
 
   const [result, setResult] = useState<string | null>(null);
@@ -171,7 +172,7 @@ const ShapeForm: React.FC = () => {
           <p className="text-white">Número de Paneles que caben: {count}</p>
         )}
       </form>
-      <SavedResults formState={formState} count={count} />
+      <SavedResults formState={formState} />
     </section>
   );
 };
