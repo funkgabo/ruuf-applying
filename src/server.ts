@@ -1,17 +1,17 @@
-import { config } from "dotenv";
-config(); // Cargar variables de entorno antes de cualquier otra cosa
-
 import express, { Request, Response } from "express";
 import next from "next";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import calculations from "./api/calculations";
+import { config } from "dotenv";
+
+config();
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const dbUri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@litswm.b362gwa.mongodb.net/?retryWrites=true&w=majority&appName=LITSWM`; // Reemplaza con tu URI de MongoDB
+const dbUri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@litswm.b362gwa.mongodb.net/?retryWrites=true&w=majority&appName=LITSWM`;
 
 mongoose.connect(dbUri);
 

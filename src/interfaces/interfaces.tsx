@@ -13,11 +13,19 @@ export interface SavedResultsProps {
 }
 
 export interface FormResult {
-  formState: FormState;
+  quadrilateralLength: number;
+  quadrilateralHeight: number;
+  length: number;
+  height: number;
+  shape: string;
+  _id: string | null | undefined;
   count: number | null;
 }
 
 export interface FormStore {
   results: FormResult[];
   addResult: (newResult: FormResult) => void;
+  deleteAll: () => void;
+  fetchResults: () => void;
+  addResultToDB: (newResult: FormResult) => void;
 }

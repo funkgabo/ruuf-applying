@@ -1,39 +1,31 @@
-import express from "express";
-import mongoose, { Document, Schema } from "mongoose";
+import { Router } from "express";
+import mongoose from "mongoose";
 
-interface FormState extends Document {
-  shape: "cuadrado" | "triángulo";
-  height: number;
-  length: number;
-  quadrilateralHeight: number;
-  quadrilateralLength: number;
-  count: number;
-}
-
-const formStateSchema = new Schema<FormState>({
-  shape: { type: String, required: true },
-  height: { type: Number, required: true },
-  length: { type: Number, required: true },
-  quadrilateralHeight: { type: Number, required: true },
-  quadrilateralLength: { type: Number, required: true },
-  count: { type: Number, required: true },
+// Define el esquema y modelo de Mongoose
+const calculationSchema = new mongoose.Schema({
+  shape: String,
+  height: Number,
+  length: Number,
+  quadrilateralHeight: Number,
+  quadrilateralLength: Number,
+  count: Number,
 });
 
-const Calculation = mongoose.model<FormState>("Calculation", formStateSchema);
+const Calculation = mongoose.model("Calculation", calculationSchema);
 
-const router = express.Router();
+const router = Router();
 
-// Get all calculations
+// Endpoint para obtener todos los cálculos
 router.get("/", async (req, res) => {
   try {
     const calculations = await Calculation.find();
-    res.status(200).json(calculations);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch calculations" });
+    res.json(calculations);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 });
 
-// Create a new calculation
+// Endpoint para agregar un nuevo cálculo
 router.post("/", async (req, res) => {
   const {
     shape,
@@ -56,8 +48,18 @@ router.post("/", async (req, res) => {
   try {
     const savedCalculation = await newCalculation.save();
     res.status(201).json(savedCalculation);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to create calculation" });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Endpoint para borrar todos los cálculos
+router.delete("/", async (req, res) => {
+  try {
+    await Calculation.deleteMany({});
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 });
 

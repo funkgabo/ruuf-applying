@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { SavedResults } from "./SavedResults";
-import { FormState } from "../interfaces/interfaces";
+import { FormState, FormResult } from "../interfaces/interfaces";
 import resultsStore from "@/store/global";
 
 const ShapeForm: React.FC = () => {
-  const addResults = resultsStore((state) => state.addResult);
+  const addResultToDB = resultsStore((state) => state.addResultToDB);
   const deleteAll = resultsStore((state) => state.deleteAll);
 
   const [formState, setFormState] = useState<FormState>({
@@ -30,7 +30,7 @@ const ShapeForm: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const { shape, height, length, quadrilateralHeight, quadrilateralLength } =
@@ -42,14 +42,21 @@ const ShapeForm: React.FC = () => {
     if (shape === "cuadrado") {
       areaBigShape = height * length;
     } else {
-      // Validar si el triángulo es isósceles
       const isIsosceles = height > length;
       if (!isIsosceles) {
         setResult(
           "El triángulo no es isósceles. No se puede realizar la operación."
         );
         setCount(0);
-        addResults({ formState, count: 0 });
+        addResultToDB({
+          quadrilateralLength: quadrilateralLength,
+          quadrilateralHeight: quadrilateralHeight,
+          length: length,
+          height: height,
+          shape,
+          _id: "",
+          count: 0,
+        });
         return;
       }
       areaBigShape = (height * length) / 2;
@@ -73,12 +80,29 @@ const ShapeForm: React.FC = () => {
     }
     setCount(calculatedCount);
 
-    // Llamada a addResults después de actualizar el estado
-    addResults({ formState, count: calculatedCount });
+    const newResult: FormResult = {
+      quadrilateralLength,
+      quadrilateralHeight,
+      length,
+      height,
+      shape,
+      _id: null,
+      count: calculatedCount,
+    };
+
+    await addResultToDB(newResult);
   };
 
-  const resetForm = () => {
-    deleteAll();
+  const resetForm = async () => {
+    await deleteAll();
+    setFormState({
+      shape: "cuadrado",
+      height: 1,
+      length: 1,
+      quadrilateralHeight: 1,
+      quadrilateralLength: 1,
+      count: 0,
+    });
   };
 
   return (
@@ -172,7 +196,7 @@ const ShapeForm: React.FC = () => {
           <p className="text-white">Número de Paneles que caben: {count}</p>
         )}
       </form>
-      <SavedResults formState={formState} />
+      <SavedResults />
     </section>
   );
 };
